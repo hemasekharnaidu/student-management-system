@@ -1,13 +1,29 @@
-Student Management System
-A full-stack web application built using Node.js, Express.js, and MySQL that allows administrators to manage student records with secure authentication.
-Features
-Secure login system
-Session-based authentication
-Add, update, delete students
-Student search functionality
-Dashboard interface
-Technologies Used
-Node.js
-Express.js
-MySQL
-HTML / CSS / JavaScript
+
+---
+
+# 2️⃣ Student Management System README
+
+# Student Management System
+
+A web-based application developed to manage student records with authentication and database integration.
+
+## Features
+- Student record management
+- Add, update, delete, and view student details
+- Secure login authentication
+- Database storage using MySQL
+
+## Technologies Used
+- Node.js
+- Express.js
+- MySQL
+- HTML
+- CSS
+- JavaScript
+
+## How to Run
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/hemasekharnaidu/student-management-system
