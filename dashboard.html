@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f4f4;
+            padding: 40px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 800px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        input {
+            padding: 8px;
+            margin: 5px;
+        }
+
+        button {
+            padding: 8px 12px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid gray;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+
+        .logout {
+            float: right;
+            background: red;
+            color: white;
+            text-decoration: none;
+            padding: 6px 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="/logout" class="logout">Logout</a>
+        <h2>Student Management System</h2>
+
+        <form id="studentForm">
+            <input type="hidden" id="studentId">
+            <input type="text" id="name" placeholder="Name" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="text" id="department" placeholder="Department" required>
+            <input type="number" id="age" placeholder="Age" required>
+            <button type="submit">Save</button>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Department</th>
+                    <th>Age</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="studentTable"></tbody>
+        </table>
+    </div>
+
+    <script>
+        const API = "http://localhost:3000";
+
+        document.addEventListener("DOMContentLoaded", loadStudents);
+
+        function loadStudents() {
+            fetch(API + "/students")
+                .then(res => res.json())
+                .then(data => {
+                    const table = document.getElementById("studentTable");
+                    table.innerHTML = "";
+
+                    data.forEach(student => {
+                        table.innerHTML += `
+                            <tr>
+                                <td>${student.name}</td>
+                                <td>${student.email}</td>
+                                <td>${student.department}</td>
+                                <td>${student.age}</td>
+                                <td>
+                                    <button onclick="editStudent(${student.id}, '${student.name}', '${student.email}', '${student.department}', ${student.age})">Edit</button>
+                                    <button onclick="deleteStudent(${student.id})">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                });
+        }
+
+        document.getElementById("studentForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const id = document.getElementById("studentId").value;
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const department = document.getElementById("department").value;
+            const age = document.getElementById("age").value;
+
+            const method = id ? "PUT" : "POST";
+            const url = id ? API + "/students/" + id : API + "/students";
+
+            fetch(url, {
+                method: method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, department, age })
+            }).then(() => {
+                document.getElementById("studentForm").reset();
+                document.getElementById("studentId").value = "";
+                loadStudents();
+            });
+        });
+
+        function editStudent(id, name, email, department, age) {
+            document.getElementById("studentId").value = id;
+            document.getElementById("name").value = name;
+            document.getElementById("email").value = email;
+            document.getElementById("department").value = department;
+            document.getElementById("age").value = age;
+        }
+
+        function deleteStudent(id) {
+            fetch(API + "/students/" + id, { method: "DELETE" })
+                .then(() => loadStudents());
+        }
+    </script>
+
+</body>
+</html>
